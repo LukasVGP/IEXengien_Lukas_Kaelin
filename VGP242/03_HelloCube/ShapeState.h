@@ -13,21 +13,15 @@ public:
 protected:
 	virtual void CreateShape();
 
-	struct Vertex
-	{
-		IExeEngine::Math::Vector3 position;
-		IExeEngine::Graphics::Color color;
-	};
-	using Vertices = std::vector<Vertex>;
-	Vertices mVertices;
-
-	ID3D11Buffer* mVertexBuffer = nullptr;
-	ID3D11VertexShader* mVertexShader = nullptr;
-	ID3D11InputLayout* mInputLayout = nullptr;
-	ID3D11PixelShader* mPixelShader = nullptr;
+	IExeEngine::Graphics::MeshPC mMesh;
+	IExeEngine::Graphics::Camera mCamera;
+	IExeEngine::Graphics::ConstantBuffer mTransformBuffer;
+	IExeEngine::Graphics::MeshBuffer mMeshbuffer;
+	IExeEngine::Graphics::VertexShader mVertexShader;
+	IExeEngine::Graphics::PixelShader mPixelShader;
 };
 
-class TriForce : public ShapeState
+class CubeState : public ShapeState
 {
 public:
 	void Update(float deltaTime) override;
@@ -35,7 +29,7 @@ protected:
 	void CreateShape() override;
 };
 
-class House : public ShapeState
+class PyramidState : public ShapeState
 {
 public:
 	void Update(float deltaTime) override;
@@ -43,7 +37,7 @@ protected:
 	void CreateShape() override;
 };
 
-class Heart : public ShapeState
+class RectangleState : public ShapeState
 {
 public:
 	void Update(float deltaTime) override;

@@ -1,8 +1,8 @@
 #include "Precompiled.h"
 #include "InputSystem.h"
 
-using namespace DEngine;
-using namespace DEngine::Input;
+using namespace IExeEngine;
+using namespace IExeEngine::Input;
 
 namespace
 {

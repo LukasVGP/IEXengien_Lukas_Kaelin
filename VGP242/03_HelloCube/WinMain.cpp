@@ -4,16 +4,14 @@
 int WINAPI WinMain(HINSTANCE instance, HINSTANCE, LPSTR, int)
 {
     IExeEngine::AppConfig config;
-    config.appName = L"Hello Shapes";
-
-    config.winWidth = 1200;
-    config.winHeight = 720;
+    config.appName = L"Hello Cube";
 
     IExeEngine::App& myApp = IExeEngine::MainApp();
 
-    myApp.AddState<TriForce>("TriForce");
-    myApp.AddState<House>("House");
-    myApp.AddState<Heart>("Heart");
+    myApp.AddState<ShapeState>("ShapeState");
+    myApp.AddState<CubeState>("Cube");
+    myApp.AddState<PyramidState>("Pyramid");
+    myApp.AddState<RectangleState>("Rectangle");
 
     myApp.Run(config);
 
