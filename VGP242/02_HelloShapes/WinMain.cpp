@@ -1,19 +1,20 @@
 #include <IExeEngine/Inc/IExeEngine.h>
 #include "ShapeState.h"
+#include <Windows.h>
 
-int WINAPI WinMain(HINSTANCE instance, HINSTANCE, LPSTR, int)
+int WINAPI WinMain(
+    _In_ HINSTANCE hInstance,
+    _In_opt_ HINSTANCE hPrevInstance,
+    _In_ LPSTR lpCmdLine,
+    _In_ int nShowCmd)
 {
     IExeEngine::AppConfig config;
-    config.appName = L"Hello Shapes";
-
+    config.appName = L"Fruit Shapes";
     config.winWidth = 1200;
     config.winHeight = 720;
 
     IExeEngine::App& myApp = IExeEngine::MainApp();
-
-    myApp.AddState<TriForce>("TriForce");
-    myApp.AddState<House>("House");
-    myApp.AddState<Heart>("Heart");
+    myApp.AddState<ShapeState>("ShapeState");
 
     myApp.Run(config);
 

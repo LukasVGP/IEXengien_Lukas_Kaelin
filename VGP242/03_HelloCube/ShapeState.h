@@ -1,5 +1,4 @@
 #pragma once
-
 #include <IExeEngine/Inc/IExeEngine.h>
 
 class ShapeState : public IExeEngine::AppState
@@ -12,7 +11,6 @@ public:
 
 protected:
 	virtual void CreateShape();
-
 	IExeEngine::Graphics::MeshPC mMesh;
 	IExeEngine::Graphics::Camera mCamera;
 	IExeEngine::Graphics::ConstantBuffer mTransformBuffer;
