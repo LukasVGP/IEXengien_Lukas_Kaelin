@@ -1,40 +1,52 @@
 #pragma once
-#include <IExeEngine/Inc/IExeEngine.h>
 
-enum class FruitType
-{
-    All,
-    Apple,
-    Banana,
-    Orange
-};
+#include <IExeEngine/Inc/IExeEngine.h>
 
 class ShapeState : public IExeEngine::AppState
 {
 public:
-    void Initialize() override;
-    void Terminate() override;
-    void Update(float deltaTime) override;
-    void Render() override;
+	void Initialize() override;
+	void Terminate() override;
+	void Update(float deltaTime) override;
+	void Render() override;
 
-private:
-    void CreateShape();
-    void CreateApple();
-    void CreateBanana();
-    void CreateOrange();
-    void CreateAllFruits();
+protected:
+	virtual void CreateShape();
 
-    struct Vertex
-    {
-        IExeEngine::Math::Vector3 position;
-        IExeEngine::Graphics::Color color;
-    };
-    using Vertices = std::vector<Vertex>;
-    Vertices mVertices;
-    ID3D11Buffer* mVertexBuffer = nullptr;
-    ID3D11VertexShader* mVertexShader = nullptr;
-    ID3D11InputLayout* mInputLayout = nullptr;
-    ID3D11PixelShader* mPixelShader = nullptr;
+	struct Vertex
+	{
+		IExeEngine::Math::Vector3 position;
+		IExeEngine::Graphics::Color color;
+	};
+	using Vertices = std::vector<Vertex>;
+	Vertices mVertices;
 
-    FruitType mCurrentFruit = FruitType::All;
+	ID3D11Buffer* mVertexBuffer = nullptr;
+	ID3D11VertexShader* mVertexShader = nullptr;
+	ID3D11InputLayout* mInputLayout = nullptr;
+	ID3D11PixelShader* mPixelShader = nullptr;
+};
+
+class TriForce : public ShapeState
+{
+public:
+	void Update(float deltaTime) override;
+protected:
+	void CreateShape() override;
+};
+
+class House : public ShapeState
+{
+public:
+	void Update(float deltaTime) override;
+protected:
+	void CreateShape() override;
+};
+
+class Heart : public ShapeState
+{
+public:
+	void Update(float deltaTime) override;
+protected:
+	void CreateShape() override;
 };
