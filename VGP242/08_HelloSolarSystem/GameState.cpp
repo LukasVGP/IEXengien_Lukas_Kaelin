@@ -17,7 +17,7 @@ enum class PlanetRenderTarget
 	Uranus,
 	Neptune,
 	Pluto,
-	DeathStar // Added Death Star to enum
+	DeathStar 
 };
 PlanetRenderTarget gCurrentPlanet = PlanetRenderTarget::Sun;
 
@@ -123,8 +123,9 @@ void GameState::Initialize()
 	mSaturn.distanceFromCenter = 24.0f;
 	mSaturn.orbitTranslation = 0.5f;
 	mSaturn.rotationOnAxis = 1.0f;
-	MeshPX saturnObj = MeshBuilder::CreateOBJPX(L"../../Assets/Models/Planets/Saturn/Saturn.obj", 1.0f);
-	mSaturn.renderData.mesh.Initialize(saturnObj);
+	
+	MeshPX saturnSphere = MeshBuilder::CreateSpherePX(60, 60, mSaturn.radius); // Create a sphere instead of loading OBJ
+	mSaturn.renderData.mesh.Initialize(saturnSphere); // Initialize with the sphere mesh
 	mSaturn.renderData.textureId = TextureManager::Get()->LoadTexture(L"planets/saturn.jpg");
 	mSaturn.renderData.matWorld = Math::Matrix4::Translation(mSaturn.distanceFromCenter, 0, 0);
 
