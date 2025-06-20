@@ -16,14 +16,16 @@ enum class PlanetRenderTarget
 	Saturn,
 	Uranus,
 	Neptune,
-	Pluto
+	Pluto,
+	DeathStar // Added Death Star to enum
 };
 PlanetRenderTarget gCurrentPlanet = PlanetRenderTarget::Sun;
 
 const char* gPlanetNames[] =
 {
 	"Sun", "Mercury", "Venus", "Earth", "Moon", "Mars",
-	"Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"
+	"Jupiter", "Saturn", "Uranus", "Neptune", "Pluto",
+	"Death Star" // Added Death Star to names array
 };
 
 void GameState::Initialize()
@@ -159,6 +161,18 @@ void GameState::Initialize()
 	mPluto.renderData.textureId = TextureManager::Get()->LoadTexture(L"planets/pluto.jpg");
 	mPluto.renderData.matWorld = Math::Matrix4::Translation(mPluto.distanceFromCenter, 0, 0);
 
+	// Death Star (orbiting Mars)
+	mDeathStar.radius = 0.2f; // Similar size to Pluto, slightly larger than Moon
+	mDeathStar.centerObject = mMars.renderData.matWorld; // Orbits Mars
+	mDeathStar.distanceFromCenter = 1.0f; // Distance from Mars
+	mDeathStar.orbitTranslation = 0.25f; // Slightly faster orbit around Mars
+	mDeathStar.rotationOnAxis = 0.5f; // Slower self-rotation
+	MeshPX deathStarSphere = MeshBuilder::CreateSpherePX(60, 60, mDeathStar.radius);
+	mDeathStar.renderData.mesh.Initialize(deathStarSphere);
+	mDeathStar.renderData.textureId = TextureManager::Get()->LoadTexture(L"planets/deathstar.jpg"); // Assuming deathstar.jpg exists
+	mDeathStar.renderData.matWorld = Math::Matrix4::Translation(mMars.distanceFromCenter + mDeathStar.distanceFromCenter, 0, 0);
+
+
 	constexpr uint32_t size = 512;
 	mRenderTarget.Initialize(size, size, RenderTarget::Format::RGBA_U32);
 }
@@ -178,6 +192,7 @@ void GameState::Terminate()
 	TextureManager::Get()->ReleaseTexture(mUranus.renderData.textureId);
 	TextureManager::Get()->ReleaseTexture(mNeptune.renderData.textureId);
 	TextureManager::Get()->ReleaseTexture(mPluto.renderData.textureId);
+	TextureManager::Get()->ReleaseTexture(mDeathStar.renderData.textureId); // Release Death Star texture
 
 	mSpace.mesh.Terminate();
 	mSun.mesh.Terminate();
@@ -191,6 +206,7 @@ void GameState::Terminate()
 	mUranus.renderData.mesh.Terminate();
 	mNeptune.renderData.mesh.Terminate();
 	mPluto.renderData.mesh.Terminate();
+	mDeathStar.renderData.mesh.Terminate(); // Terminate Death Star mesh
 
 	mSimpleTextureEffect.Terminate();
 }
@@ -213,6 +229,7 @@ void GameState::Update(float deltaTime)
 	UpdatePlanet(mEarth, deltaTime);
 	UpdateMoon(mMoon, mEarth, deltaTime);
 	UpdatePlanet(mMars, deltaTime);
+	UpdateMoon(mDeathStar, mMars, deltaTime); // Update Death Star orbiting Mars
 	UpdatePlanet(mJupiter, deltaTime);
 	UpdatePlanet(mSaturn, deltaTime);
 	UpdatePlanet(mUranus, deltaTime);
@@ -263,6 +280,10 @@ void GameState::Update(float deltaTime)
 	else if (gCurrentPlanet == PlanetRenderTarget::Pluto)
 	{
 		UpdateRenderTargetCamera(deltaTime, GetObjectPosition(mPluto.renderData.matWorld), mPluto.radius + 1.0f);
+	}
+	else if (gCurrentPlanet == PlanetRenderTarget::DeathStar) // Update Render Target Camera for Death Star
+	{
+		UpdateRenderTargetCamera(deltaTime, GetObjectPosition(mDeathStar.renderData.matWorld), mDeathStar.radius + 1.0f);
 	}
 }
 
@@ -318,6 +339,10 @@ void GameState::Render()
 	{
 		mSimpleTextureEffect.Render(mPluto.renderData);
 	}
+	else if (gCurrentPlanet == PlanetRenderTarget::DeathStar) // Render Death Star to render target
+	{
+		mSimpleTextureEffect.Render(mDeathStar.renderData);
+	}
 	mSimpleTextureEffect.End();
 	mRenderTarget.EndRender();
 
@@ -337,6 +362,7 @@ void GameState::Render()
 	mSimpleTextureEffect.Render(mUranus.renderData);
 	mSimpleTextureEffect.Render(mNeptune.renderData);
 	mSimpleTextureEffect.Render(mPluto.renderData);
+	mSimpleTextureEffect.Render(mDeathStar.renderData); // Render Death Star to scene
 
 	mSimpleTextureEffect.End();
 }
@@ -358,6 +384,7 @@ void GameState::DebugUI()
 		SimpleDraw::AddGroundCircle(60, mUranus.distanceFromCenter, Colors::White, Math::Vector3::Zero);
 		SimpleDraw::AddGroundCircle(60, mNeptune.distanceFromCenter, Colors::White, Math::Vector3::Zero);
 		SimpleDraw::AddGroundCircle(60, mPluto.distanceFromCenter, Colors::White, Math::Vector3::Zero);
+		SimpleDraw::AddGroundCircle(60, mMars.distanceFromCenter + mDeathStar.distanceFromCenter, Colors::White, Math::Vector3::Zero); // Orbit ring for Death Star
 	}
 
 	ImGui::Text("Choose Planet to Render");
@@ -412,6 +439,10 @@ void GameState::DebugUI()
 	case PlanetRenderTarget::Pluto:
 		ImGui::Text("Pluto");
 		ImGui::DragFloat("Orbit Translation Speed", &mPluto.orbitTranslation, 0.01f, 0.0f, 10.0f);
+		break;
+	case PlanetRenderTarget::DeathStar: // DebugUI for Death Star
+		ImGui::Text("Death Star");
+		ImGui::DragFloat("Orbit Translation Speed", &mDeathStar.orbitTranslation, 0.01f, 0.0f, 10.0f);
 		break;
 	default:
 		break;
