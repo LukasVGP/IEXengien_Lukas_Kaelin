@@ -168,13 +168,13 @@ void GameState::DebugUI()
 {
 	ImGui::Begin("Debug", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
 
-	ImGui::Text("1");
-	ImGui::Checkbox("2", &gCheckValue);
-	ImGui::DragFloat("3", &gFloatVal);
-	ImGui::DragFloat3("[V0] 4", &gV0.x, 0.1f);
-	ImGui::DragFloat3("[V1] 5", &gV1.x, 0.1f);
-	ImGui::DragFloat3("[V2] 6", &gV2.x, 0.1f);
-	ImGui::ColorEdit4("7", &gColor.r);
+	ImGui::Text("Im Skylar White, YO!");
+	ImGui::Checkbox("My husband is Walter White, YO?", &gCheckValue);
+	ImGui::DragFloat("How Bad are you Breaking?", &gFloatVal);
+	ImGui::DragFloat3("[V0] So you do have a plan?", &gV0.x, 0.1f);
+	ImGui::DragFloat3("[V1] Yeah, Mr.White!", &gV1.x, 0.1f);
+	ImGui::DragFloat3("[V2] YEAH SCIENCE!", &gV2.x, 0.1f);
+	ImGui::ColorEdit4("Walter...?", &gColor.r);
 
 	int currentShape = (int)gCurrentShape;
     int currentPlanet = (int)gCurrentPlanet;
