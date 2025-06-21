@@ -174,19 +174,19 @@ void TriForce::Update(float deltaTime)
 void TriForce::CreateShape()
 {
 	// Top triangle
-	mVertices.push_back({ { -0.25f, 0.25f, 0.0f }, Colors::Yellow });
+	mVertices.push_back({ { -0.1f, 0.25f, 0.0f }, Colors::Yellow });
 	mVertices.push_back({ { 0.0f, 0.5f, 0.0f }, Colors::Yellow });
-	mVertices.push_back({ { 0.25f, 0.25f, 0.0f }, Colors::Yellow });
+	mVertices.push_back({ { 0.1f, 0.25f, 0.0f }, Colors::Yellow });
 
 	// Bottom-left triangle
 	mVertices.push_back({ { -0.5f, 0.0f, 0.0f }, Colors::Yellow });
-	mVertices.push_back({ { -0.25f, 0.25f, 0.0f }, Colors::Yellow });
-	mVertices.push_back({ { 0.0f, 0.0f, 0.0f }, Colors::Yellow });
+	mVertices.push_back({ { -0.1f, 0.25f, 0.0f }, Colors::Yellow });
+	mVertices.push_back({ { 0.0f, -0.25f, 0.0f }, Colors::Yellow });
 
 	// Bottom-right triangle
 	mVertices.push_back({ { 0.5f, 0.0f, 0.0f }, Colors::Yellow });
-	mVertices.push_back({ { 0.0f, 0.0f, 0.0f }, Colors::Yellow });
-	mVertices.push_back({ { 0.25f, 0.25f, 0.0f }, Colors::Yellow });
+	mVertices.push_back({ { 0.0f, -0.25f, 0.0f }, Colors::Yellow });
+	mVertices.push_back({ { 0.1f, 0.25f, 0.0f }, Colors::Yellow });
 }
 
 void House::Update(float deltaTime)
