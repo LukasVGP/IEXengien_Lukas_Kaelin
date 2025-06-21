@@ -11,7 +11,7 @@ void GameState::Initialize()
 
 	mRenderTargetCamera.SetPosition({ 0.0f, 1.0f, -3.0f });
 	mRenderTargetCamera.SetLookAt({ 0.0f, 0.0f, 0.0f });
-    mRenderTargetCamera.SetAspectRatio(1.0f);
+	mRenderTargetCamera.SetAspectRatio(1.0f);
 
 	// Initialize GPU Communication
 	std::filesystem::path shaderFile = L"../../Assets/Shaders/DoTexture.fx";
@@ -21,23 +21,25 @@ void GameState::Initialize()
 	mTransformBuffer.Initialize(sizeof(Math::Matrix4));
 
 	// Initialize Render Object
-	MeshPX sphere = MeshBuilder::CreateSpherePX(60, 60, 1.0f);
+	// Make spheres 20% bigger (radius 1.0f * 1.20 = 1.2f)
+	MeshPX sphere = MeshBuilder::CreateSpherePX(60, 60, 1.2f); // Changed radius from 1.0f to 1.2f
 	mEarth.meshBuffer.Initialize(sphere);
 	mSun.meshBuffer.Initialize(sphere);
 	MeshPX spaceSphere = MeshBuilder::CreateSkySpherePX(30, 30, 250.0f);
 	mSpace.meshBuffer.Initialize(spaceSphere);
 
 	mSpace.textureId = TextureManager::Get()->LoadTexture(L"space.jpg");
-    mEarth.textureId = TextureManager::Get()->LoadTexture(L"earth.jpg");
-    mSun.textureId = TextureManager::Get()->LoadTexture(L"sun.jpg");
+	mEarth.textureId = TextureManager::Get()->LoadTexture(L"earth.jpg");
+	mSun.textureId = TextureManager::Get()->LoadTexture(L"sun.jpg");
 
-    // Moving other objects to the right positions
-    mSun.worldMat = Math::Matrix4::Translation(0.0f, 0.0f, 0.0f);
-    mEarth.worldMat = Math::Matrix4::Translation(3.0f, 0.0f, 0.0f);
-    mSpace.worldMat = Math::Matrix4::Translation(0.0f, 0.0f, 0.0f);
+	// Moving other objects to the right positions
+	// Changed Sun's position to (-2.0f, 0.0f, 0.0f) and Earth's to (2.0f, 0.0f, 0.0f)
+	mSun.worldMat = Math::Matrix4::Translation(-2.0f, 0.0f, 0.0f); // Moved Sun to the left
+	mEarth.worldMat = Math::Matrix4::Translation(2.0f, 0.0f, 0.0f); // Moved Earth to the right
+	mSpace.worldMat = Math::Matrix4::Translation(0.0f, 0.0f, 0.0f);
 
-    constexpr uint32_t size = 512;
-    mRenderTarget.Initialize(size, size, RenderTarget::Format::RGBA_U32);
+	constexpr uint32_t size = 512;
+	mRenderTarget.Initialize(size, size, RenderTarget::Format::RGBA_U32);
 }
 
 void GameState::Terminate()
@@ -45,15 +47,15 @@ void GameState::Terminate()
 	TextureManager::Get()->ReleaseTexture(mSpace.textureId);
 	TextureManager::Get()->ReleaseTexture(mEarth.textureId);
 	TextureManager::Get()->ReleaseTexture(mSun.textureId);
-    mSpace.meshBuffer.Terminate();
-    mEarth.meshBuffer.Terminate();
-    mSun.meshBuffer.Terminate();
+	mSpace.meshBuffer.Terminate();
+	mEarth.meshBuffer.Terminate();
+	mSun.meshBuffer.Terminate();
 
 	mTransformBuffer.Terminate();
 	mSampler.Terminate();
 	mPixelShader.Terminate();
 	mVertexShader.Terminate();
-    mRenderTarget.Terminate();
+	mRenderTarget.Terminate();
 }
 
 void GameState::Update(float deltaTime)
@@ -68,10 +70,10 @@ enum class PlanetRenderTargets
 	Sun
 };
 const char* gPlanetNames[] =
-{ 
-  "Space",
-  "Earth",
-  "Sun"
+{
+	"Space",
+	"Earth",
+	"Sun"
 };
 PlanetRenderTargets gCurrentPlanet = PlanetRenderTargets::Space;
 
@@ -80,7 +82,7 @@ void GameState::Render()
 	SimpleDraw::AddGroundPlane(20.0f, Colors::Wheat);
 	SimpleDraw::Render(mCamera);
 
-    // Render to Render Target ImGui Image
+	// Render to Render Target ImGui Image
 	mRenderTarget.BeginRender();
 	if (gCurrentPlanet == PlanetRenderTargets::Space)
 	{
@@ -92,13 +94,15 @@ void GameState::Render()
 	{
 		RenderObject(mEarth, mRenderTargetCamera);
 		mRenderTargetCamera.SetPosition({ 0.0f, 1.0f, -3.0f });
-		mRenderTargetCamera.SetLookAt({ 3.0f, 0.0f, 0.0f });
+		// Adjust look-at for render target camera based on Earth's new position
+		mRenderTargetCamera.SetLookAt({ 2.0f, 0.0f, 0.0f });
 	}
 	else if (gCurrentPlanet == PlanetRenderTargets::Sun)
 	{
 		RenderObject(mSun, mRenderTargetCamera);
 		mRenderTargetCamera.SetPosition({ 0.0f, 1.0f, -3.0f });
-		mRenderTargetCamera.SetLookAt({ 0.0f, 0.0f, 0.0f });
+		// Adjust look-at for render target camera based on Sun's new position
+		mRenderTargetCamera.SetLookAt({ -2.0f, 0.0f, 0.0f });
 	}
 	else
 	{
@@ -107,7 +111,7 @@ void GameState::Render()
 	mRenderTarget.EndRender();
 
 	// Render to Scene
-    RenderObject(mSpace, mCamera);
+	RenderObject(mSpace, mCamera);
 	RenderObject(mEarth, mCamera);
 	RenderObject(mSun, mCamera);
 }
@@ -168,16 +172,16 @@ void GameState::DebugUI()
 {
 	ImGui::Begin("Debug", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
 
-	ImGui::Text("Im Skylar White, YO!");
-	ImGui::Checkbox("My husband is Walter White, YO?", &gCheckValue);
-	ImGui::DragFloat("How Bad are you Breaking?", &gFloatVal);
-	ImGui::DragFloat3("[V0] So you do have a plan?", &gV0.x, 0.1f);
-	ImGui::DragFloat3("[V1] Yeah, Mr.White!", &gV1.x, 0.1f);
-	ImGui::DragFloat3("[V2] YEAH SCIENCE!", &gV2.x, 0.1f);
-	ImGui::ColorEdit4("Walter...?", &gColor.r);
+	ImGui::Text("Hello_Render_target!");
+	ImGui::Checkbox("check", &gCheckValue);
+	ImGui::DragFloat("1", &gFloatVal);
+	ImGui::DragFloat3("2", &gV0.x, 0.1f);
+	ImGui::DragFloat3("3", &gV1.x, 0.1f);
+	ImGui::DragFloat3("4", &gV2.x, 0.1f);
+	ImGui::ColorEdit4("5", &gColor.r);
 
 	int currentShape = (int)gCurrentShape;
-    int currentPlanet = (int)gCurrentPlanet;
+	int currentPlanet = (int)gCurrentPlanet;
 
 	if (ImGui::Combo("Shape", &currentShape, gShapeNames, std::size(gShapeNames)))
 	{
@@ -251,14 +255,14 @@ void GameState::DebugUI()
 	}
 	}
 
-    // To Render specific planet to the render target GUI Window
-    if (ImGui::Combo("Planet Render Target", &currentPlanet, gPlanetNames, std::size(gPlanetNames)))
-    {
-        gCurrentPlanet = (PlanetRenderTargets)currentPlanet;
-    }
+	// To Render specific planet to the render target GUI Window
+	if (ImGui::Combo("Planet Render Target", &currentPlanet, gPlanetNames, std::size(gPlanetNames)))
+	{
+		gCurrentPlanet = (PlanetRenderTargets)currentPlanet;
+	}
 
 	ImGui::Separator();
-    ImGui::Text("RenderTarget");
+	ImGui::Text("RenderTarget");
 	ImGui::Image(
 		mRenderTarget.GetRawData(),
 		{ 128, 128 },
