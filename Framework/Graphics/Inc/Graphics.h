@@ -37,3 +37,19 @@
 #include "RenderTarget.h"
 
 #include "SimpleTextureEffect.h"
+
+#include "RenderObject.h"
+
+#include "Transform.h"
+
+#include "StandardEffect.h"
+
+#include "DirectionalLight.h"
+
+#include "Material.h"
+
+#include "Model.h"
+
+#include "ModelIO.h"
+
+#include "ModelManager.h"
