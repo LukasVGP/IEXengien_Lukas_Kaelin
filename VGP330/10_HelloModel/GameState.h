@@ -8,7 +8,7 @@ public:
 	void Initialize() override;
 
 	void Terminate() override;
-	
+
 	void Update(float deltaTime) override;
 
 	void Render() override;
@@ -20,11 +20,15 @@ private:
 	void UpdateCamera(float deltaTime);
 
 	IExeEngine::Graphics::Camera mCamera;
-    IExeEngine::Graphics::DirectionalLight mDirectionalLight;
+	IExeEngine::Graphics::DirectionalLight mDirectionalLight;
 
-    IExeEngine::Graphics::RenderGroup mCharacter;
+	// Existing models
+	IExeEngine::Graphics::RenderGroup mCharacter;
 	IExeEngine::Graphics::RenderGroup parasite;
-    IExeEngine::Graphics::RenderGroup zombie;
+	IExeEngine::Graphics::RenderGroup zombie;
 
-    IExeEngine::Graphics::StandardEffect mStandardEffect;
+	// NEW 4th MODEL
+	IExeEngine::Graphics::RenderGroup csaSoldier;
+
+	IExeEngine::Graphics::StandardEffect mStandardEffect;
 };
