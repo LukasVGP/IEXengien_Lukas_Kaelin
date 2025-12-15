@@ -8,7 +8,7 @@ public:
 	void Initialize() override;
 
 	void Terminate() override;
-	
+
 	void Update(float deltaTime) override;
 
 	void Render() override;
@@ -20,15 +20,26 @@ private:
 	void UpdateCamera(float deltaTime);
 
 	IExeEngine::Graphics::Camera mCamera;
-    IExeEngine::Graphics::DirectionalLight mDirectionalLight;
+	IExeEngine::Graphics::DirectionalLight mDirectionalLight;
 
-    IExeEngine::Graphics::RenderGroup mCharacter;
-	IExeEngine::Graphics::RenderGroup parasite;
-    IExeEngine::Graphics::RenderGroup zombie;
+	// --- NEW CIVIL WAR MODELS ---
+	IExeEngine::Graphics::RenderGroup mCannon;
+	IExeEngine::Graphics::RenderGroup mUnionSoldier;
+	IExeEngine::Graphics::RenderGroup mCSASoldier;
+	// ----------------------------
+
 	IExeEngine::Graphics::RenderObject mGround;
 
-    IExeEngine::Graphics::RenderObject mScreenQuad;
+	// --- MISSING TERRAIN COMPONENTS ADDED ---
+	IExeEngine::Graphics::Terrain mTerrain;
+	// ----------------------------------------
 
-    IExeEngine::Graphics::StandardEffect mStandardEffect;
-    IExeEngine::Graphics::ShadowEffect mShadowEffect;
+	IExeEngine::Graphics::RenderObject mScreenQuad;
+
+	IExeEngine::Graphics::StandardEffect mStandardEffect;
+	IExeEngine::Graphics::ShadowEffect mShadowEffect;
+
+	// --- MISSING TERRAIN EFFECT ADDED ---
+	IExeEngine::Graphics::TerrainEffect mTerrainEffect;
+	// ------------------------------------
 };
