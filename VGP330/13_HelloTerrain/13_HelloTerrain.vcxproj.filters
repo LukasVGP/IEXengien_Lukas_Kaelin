@@ -27,4 +27,7 @@
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\14_HelloFinalSetUP\14_HelloFinalSetUP.vcxproj" />
+  </ItemGroup>
 </Project>
