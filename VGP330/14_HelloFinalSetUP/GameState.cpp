@@ -7,17 +7,16 @@ using namespace IExeEngine::Input;
 
 void GameState::Initialize()
 {
-    // --- SCENE CENTER CALCULATION ---
-    // The terrain is centered by translating models by a positive offset (10.0f).
+    
     const float centerOffset = 10.0f;
     const float sceneX = 22.0f + centerOffset;
-    const float sceneZ = 19.1f + centerOffset; // Average Z of soldiers (20.1 + 18.1) / 2
-    const float sceneY = 1.5f; // Target look height
-    // ------------------------------
+    const float sceneZ = 19.1f + centerOffset; 
+    const float sceneY = 1.5f; 
+    
 
     // 1. CAMERA: Cinematic Position
-    mCamera.SetPosition({ 2.0f, 1.5f, -3.0f });
-    // Camera now looks directly at the center of the translated scene:
+    mCamera.SetPosition({ -22.0f, 3.5f, -3.0f });
+   
     mCamera.SetLookAt({ sceneX, sceneY, sceneZ });
 
     // 2. LIGHTING: Dark, Gritty Atmosphere 
@@ -40,24 +39,25 @@ void GameState::Initialize()
     // 5. FINAL POSITIONING: CENTERED CANNON & BACK-TO-BACK SOLDIERS
 
     // Rotation Fix Constants
-    const float pitchFix = 1.5f;
+    const float pitchFix = 1.5f; // Tilts head up by ~86 degrees
     const float yaw90 = Math::Constants::Pi * 0.5f;
     const float yaw180 = Math::Constants::Pi;
 
     // Cannon: Centered, Standing Upright, Barrel Pointing Forward
-    mCannon.transform.position = { 32.0f + centerOffset, 5.0f, 19.0f + centerOffset };
+
+    mCannon.transform.position = { 32.0f + centerOffset, 5.0f, 22.0f + centerOffset };
     // YAW 90, PITCH adjusted to tilt barrel up, ROLL 0
     mCannon.transform.rotation = Math::Quaternion::CreateFromYawPitchRoll(yaw90, yaw90, 0.0f);
 
     // Union Soldier: Back-to-Back, facing AWAY from the cannon
-    mUnionSoldier.transform.position = { 22.0f + centerOffset, 5.0f, 20.1f + centerOffset };
-    // Yaw 0 (facing one way) + PitchFix (sit upright)
-    mUnionSoldier.transform.rotation = Math::Quaternion::CreateFromYawPitchRoll(0.0f, pitchFix, 0.0f);
+    mUnionSoldier.transform.position = { 20.0f + centerOffset, 00.0f, 24.0f + centerOffset };
+    // Yaw 0 was facing the CSA Soldier. Flip 180 degrees.
+    mUnionSoldier.transform.rotation = Math::Quaternion::CreateFromYawPitchRoll(yaw180, pitchFix, 0.0f);
 
     // CSA Soldier: Back-to-Back, facing TOWARDS the cannon
-    mCSASoldier.transform.position = { 22.0f + centerOffset, 5.0f, 18.1f + centerOffset };
-    // Yaw 180 (to face the opposite direction) + PitchFix (sit upright)
-    mCSASoldier.transform.rotation = Math::Quaternion::CreateFromYawPitchRoll(yaw180, pitchFix, 0.0f);
+    mCSASoldier.transform.position = { 20.0f + centerOffset, 00.0f, 20.1f + centerOffset };
+    // Yaw 180 (facing the opposite way from the Union Soldier) + PitchFix (sit upright)
+    mCSASoldier.transform.rotation = Math::Quaternion::CreateFromYawPitchRoll(0.0f, pitchFix, 0.0f); // Changed to 0.0f to be opposite of Union Soldier's Yaw (180)
 
     MeshPX screenQuadMesh = MeshBuilder::CreateScreenQuadPX();
     mScreenQuad.meshBuffer.Initialize(screenQuadMesh);
