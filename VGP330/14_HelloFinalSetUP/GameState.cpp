@@ -7,16 +7,23 @@ using namespace IExeEngine::Input;
 
 void GameState::Initialize()
 {
-    // 1. CAMERA: Cinematic Position
-    // Positioned for a cinematic view of the centered cannon and flanking soldiers.
-    mCamera.SetPosition({ 2.0f, 1.5f, -3.0f });
-    mCamera.SetLookAt({ 0.0f, 0.5f, 0.0f });
+    // --- SCENE CENTER CALCULATION ---
+    // The terrain is centered by translating models by a positive offset (10.0f).
+    const float centerOffset = 10.0f;
+    const float sceneX = 22.0f + centerOffset;
+    const float sceneZ = 19.1f + centerOffset; // Average Z of soldiers (20.1 + 18.1) / 2
+    const float sceneY = 1.5f; // Target look height
+    // ------------------------------
 
-    // 2. LIGHTING: Dark, Gritty Atmosphere (Adjusted for Cinematic look)
-    // Low ambient/diffuse to simulate darkness, preparing for the volumetric light/flare.
+    // 1. CAMERA: Cinematic Position
+    mCamera.SetPosition({ 2.0f, 1.5f, -3.0f });
+    // Camera now looks directly at the center of the translated scene:
+    mCamera.SetLookAt({ sceneX, sceneY, sceneZ });
+
+    // 2. LIGHTING: Dark, Gritty Atmosphere 
     mDirectionalLight.direction = Math::Normalize({ 1.0f, -1.0f, 1.0f });
-    mDirectionalLight.ambient = { 0.1f, 0.1f, 0.15f, 1.0f }; // Dark Blue/Grey Ambient
-    mDirectionalLight.diffuse = { 0.3f, 0.3f, 0.3f, 1.0f };  // Dim main light
+    mDirectionalLight.ambient = { 0.1f, 0.1f, 0.15f, 1.0f };
+    mDirectionalLight.diffuse = { 0.3f, 0.3f, 0.3f, 1.0f };
     mDirectionalLight.specular = { 0.1f, 0.1f, 0.1f, 1.0f };
 
     // 3. TERRAIN
@@ -30,25 +37,26 @@ void GameState::Initialize()
     mUnionSoldier.Initialize("Final/UnionSoldiersitting.model");
     mCSASoldier.Initialize("Final/CSASoldiersitting.model");
 
-    // 5. POSITIONING: CORNERED SOLDIERS & VISIBLE CANNON 
+    // 5. FINAL POSITIONING: CENTERED CANNON & BACK-TO-BACK SOLDIERS
 
     // Rotation Fix Constants
-    const float pitchFix = 1.5f; // Tilts head up by ~86 degrees (to fix 'face down' issue)
-    const float yaw90 = Math::Constants::Pi * 0.5f; // 90 degrees
-    const float yaw180 = Math::Constants::Pi;       // 180 degrees
+    const float pitchFix = 1.5f;
+    const float yaw90 = Math::Constants::Pi * 0.5f;
+    const float yaw180 = Math::Constants::Pi;
 
-    // Cannon: Place closer to the front, centered.
-    mCannon.transform.position = { 0.0f, 0.0f, -0.5f };
-    mCannon.transform.rotation = Math::Quaternion::CreateFromYawPitchRoll(yaw90, 0.0f, 0.0f);
+    // Cannon: Centered, Standing Upright, Barrel Pointing Forward
+    mCannon.transform.position = { 32.0f + centerOffset, 5.0f, 19.0f + centerOffset };
+    // YAW 90, PITCH adjusted to tilt barrel up, ROLL 0
+    mCannon.transform.rotation = Math::Quaternion::CreateFromYawPitchRoll(yaw90, yaw90, 0.0f);
 
-    // Union Soldier: Back-Left Corner, facing away from the camera
-    mUnionSoldier.transform.position = { -2.0f, 0.0f, 1.0f };
-    // Yaw 180 (facing away from camera) + PitchFix (tilts head up)
-    mUnionSoldier.transform.rotation = Math::Quaternion::CreateFromYawPitchRoll(yaw180, pitchFix, 0.0f);
+    // Union Soldier: Back-to-Back, facing AWAY from the cannon
+    mUnionSoldier.transform.position = { 22.0f + centerOffset, 5.0f, 20.1f + centerOffset };
+    // Yaw 0 (facing one way) + PitchFix (sit upright)
+    mUnionSoldier.transform.rotation = Math::Quaternion::CreateFromYawPitchRoll(0.0f, pitchFix, 0.0f);
 
-    // CSA Soldier: Back-Right Corner, facing away from the camera
-    mCSASoldier.transform.position = { 2.0f, 0.0f, 1.0f };
-    // Yaw 180 (facing away from camera) + PitchFix (tilts head up)
+    // CSA Soldier: Back-to-Back, facing TOWARDS the cannon
+    mCSASoldier.transform.position = { 22.0f + centerOffset, 5.0f, 18.1f + centerOffset };
+    // Yaw 180 (to face the opposite direction) + PitchFix (sit upright)
     mCSASoldier.transform.rotation = Math::Quaternion::CreateFromYawPitchRoll(yaw180, pitchFix, 0.0f);
 
     MeshPX screenQuadMesh = MeshBuilder::CreateScreenQuadPX();
@@ -91,7 +99,7 @@ void GameState::Update(float deltaTime)
 
     // Snap objects to terrain height in Update loop
     auto SnapToGround = [&](RenderGroup& group) {
-        // Only snap if the group's root transform is near the ground.
+        // This ensures models sit on the terrain, even if it's uneven.
         Math::Vector3 pos = group.transform.position;
         float h = mTerrain.GetHeight(pos);
         if (h >= 0.0f)
