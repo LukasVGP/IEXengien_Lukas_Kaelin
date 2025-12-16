@@ -1,4 +1,7 @@
+
+#include "Precompiled.h"
 #include "GameState.h"
+#include "Precompiled.h" 
 
 using namespace IExeEngine;
 using namespace IExeEngine::Graphics;
@@ -7,16 +10,17 @@ using namespace IExeEngine::Input;
 
 void GameState::Initialize()
 {
-    
+    // --- SCENE CENTER CALCULATION ---
+    // The terrain is centered by translating models by a positive offset (10.0f).
     const float centerOffset = 10.0f;
     const float sceneX = 22.0f + centerOffset;
-    const float sceneZ = 19.1f + centerOffset; 
-    const float sceneY = 1.5f; 
-    
+    const float sceneZ = 19.1f + centerOffset; // Average Z of soldiers (20.1 + 18.1) / 2
+    const float sceneY = 1.5f; // Target look height
+    // ------------------------------
 
     // 1. CAMERA: Cinematic Position
-    mCamera.SetPosition({ -22.0f, 3.5f, -3.0f });
-   
+    mCamera.SetPosition({ 2.0f, 1.5f, -3.0f });
+    // Camera now looks directly at the center of the translated scene:
     mCamera.SetLookAt({ sceneX, sceneY, sceneZ });
 
     // 2. LIGHTING: Dark, Gritty Atmosphere 
@@ -39,25 +43,24 @@ void GameState::Initialize()
     // 5. FINAL POSITIONING: CENTERED CANNON & BACK-TO-BACK SOLDIERS
 
     // Rotation Fix Constants
-    const float pitchFix = 1.5f; // Tilts head up by ~86 degrees
+    const float pitchFix = 1.5f; // Tilts soldier head up by ~86 degrees
     const float yaw90 = Math::Constants::Pi * 0.5f;
     const float yaw180 = Math::Constants::Pi;
 
     // Cannon: Centered, Standing Upright, Barrel Pointing Forward
-
-    mCannon.transform.position = { 32.0f + centerOffset, 5.0f, 22.0f + centerOffset };
-    // YAW 90, PITCH adjusted to tilt barrel up, ROLL 0
-    mCannon.transform.rotation = Math::Quaternion::CreateFromYawPitchRoll(yaw90, yaw90, 0.0f);
+    mCannon.transform.position = { 32.0f + centerOffset, 5.0f, 19.0f + centerOffset };
+    // YAW 90, PITCH adjusted to tilt barrel up slightly, ROLL 0
+    mCannon.transform.rotation = Math::Quaternion::CreateFromYawPitchRoll(yaw90, 0.1f, 0.0f);
 
     // Union Soldier: Back-to-Back, facing AWAY from the cannon
-    mUnionSoldier.transform.position = { 20.0f + centerOffset, 00.0f, 24.0f + centerOffset };
-    // Yaw 0 was facing the CSA Soldier. Flip 180 degrees.
+    mUnionSoldier.transform.position = { 22.0f + centerOffset, 5.0f, 20.1f + centerOffset };
+    // Yaw 180 (opposite CSA) + PitchFix (sit upright)
     mUnionSoldier.transform.rotation = Math::Quaternion::CreateFromYawPitchRoll(yaw180, pitchFix, 0.0f);
 
     // CSA Soldier: Back-to-Back, facing TOWARDS the cannon
-    mCSASoldier.transform.position = { 20.0f + centerOffset, 00.0f, 20.1f + centerOffset };
-    // Yaw 180 (facing the opposite way from the Union Soldier) + PitchFix (sit upright)
-    mCSASoldier.transform.rotation = Math::Quaternion::CreateFromYawPitchRoll(0.0f, pitchFix, 0.0f); // Changed to 0.0f to be opposite of Union Soldier's Yaw (180)
+    mCSASoldier.transform.position = { 22.0f + centerOffset, 5.0f, 18.1f + centerOffset };
+    // Yaw 0 (opposite Union) + PitchFix (sit upright)
+    mCSASoldier.transform.rotation = Math::Quaternion::CreateFromYawPitchRoll(0.0f, pitchFix, 0.0f);
 
     MeshPX screenQuadMesh = MeshBuilder::CreateScreenQuadPX();
     mScreenQuad.meshBuffer.Initialize(screenQuadMesh);
@@ -79,10 +82,21 @@ void GameState::Initialize()
     mTerrainEffect.SetLightCamera(mShadowEffect.GetLightCamera());
     mTerrainEffect.SetDirectionalLight(mDirectionalLight);
     mTerrainEffect.SetShadowMap(mShadowEffect.GetDepthMap());
+
+    // --- NEW: Volumetric Fog Effect Initialization ---
+    shaderFile = L"../../Assets/Shaders/VolumetricFog.fx";
+    mVolumetricFogEffect.Initialize(shaderFile);
+    mVolumetricFogEffect.SetCamera(mCamera);
+    mVolumetricFogEffect.SetDirectionalLight(mDirectionalLight);
+    // Use the Shadow Map's depth buffer for world position reconstruction
+    mVolumetricFogEffect.SetDepthMap(mShadowEffect.GetDepthMap());
 }
 
 void GameState::Terminate()
 {
+    // Terminate the new effect
+    mVolumetricFogEffect.Terminate();
+
     mTerrainEffect.Terminate();
     mShadowEffect.Terminate();
     mScreenQuad.Terminate();
@@ -133,6 +147,13 @@ void GameState::Render()
     mStandardEffect.Render(mUnionSoldier);
     mStandardEffect.Render(mCSASoldier);
     mStandardEffect.End();
+
+    // --- FINAL PASS: Volumetric Fog (Post-Processing) ---
+    mVolumetricFogEffect.Begin();
+    // Render the full-screen quad (mScreenQuad) to apply the volumetric fog shader
+    mVolumetricFogEffect.Render(mScreenQuad);
+    mVolumetricFogEffect.End();
+    // ----------------------------------------------------
 }
 
 void GameState::DebugUI()
@@ -185,6 +206,9 @@ void GameState::DebugUI()
     mStandardEffect.DebugUI();
     mShadowEffect.DebugUI();
     mTerrainEffect.DebugUI();
+
+    // NEW: Debug UI for Fog Parameters
+    mVolumetricFogEffect.DebugUI();
 
     ImGui::End();
 }

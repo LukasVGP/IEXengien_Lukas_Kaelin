@@ -1,6 +1,7 @@
 #pragma once
 
 #include <IExeEngine/Inc/IExeEngine.h>
+#include <IExeEngine/Inc/Graphics/VolumetricFogEffect.h>
 
 class GameState : public IExeEngine::AppState
 {
@@ -29,17 +30,14 @@ private:
 	// ----------------------------
 
 	IExeEngine::Graphics::RenderObject mGround;
-
-	// --- MISSING TERRAIN COMPONENTS ADDED ---
 	IExeEngine::Graphics::Terrain mTerrain;
-	// ----------------------------------------
-
 	IExeEngine::Graphics::RenderObject mScreenQuad;
 
 	IExeEngine::Graphics::StandardEffect mStandardEffect;
 	IExeEngine::Graphics::ShadowEffect mShadowEffect;
-
-	// --- MISSING TERRAIN EFFECT ADDED ---
 	IExeEngine::Graphics::TerrainEffect mTerrainEffect;
-	// ------------------------------------
+
+	// --- NEW: Volumetric Fog Effect ---
+	IExeEngine::Graphics::VolumetricFogEffect mVolumetricFogEffect;
+	// ----------------------------------
 };
