@@ -1,7 +1,6 @@
 
-#include "Precompiled.h"
 #include "GameState.h"
-#include "Precompiled.h" 
+
 
 using namespace IExeEngine;
 using namespace IExeEngine::Graphics;

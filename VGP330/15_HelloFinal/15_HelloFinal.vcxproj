@@ -108,12 +108,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Work\LaSalle\Unity_Projects\IEXengien_Lukas_Kaelin\;C:\Work\LaSalle\Unity_Projects\IEXengien_Lukas_Kaelin\Engine\IExeEngine\Inc;$(SolutionDir)Engine\IExeEngine\Inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Work\LaSalle\Unity\IEXengien_Lukas_Kaelin\Framework\Graphics\Inc;D:\Work\LaSalle\Unity\IEXengien_Lukas_Kaelin\Engine\IExeEngine\Inc;D:\Work\LaSalle\Unity\IEXengien_Lukas_Kaelin\VGP330\15_HelloFinal;$(SolutionDir)Engine\IExeEngine\Inc;C:\Work\LaSalle\Unity_Projects\IEXengien_Lukas_Kaelin\;C:\Work\LaSalle\Unity_Projects\IEXengien_Lukas_Kaelin\Engine\IExeEngine\Inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>C:\Work\LaSalle\Unity_Projects\IEXengien_Lukas_Kaelin\x64\Debug\;$(SolutionDir)Engine\IExeEngine\Inc;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>D:\Work\LaSalle\Unity\IEXengien_Lukas_Kaelin\Engine\IExeEngine\Inc;D:\Work\LaSalle\Unity\IEXengien_Lukas_Kaelin;D:\Work\LaSalle\Unity\IEXengien_Lukas_Kaelin\x64\Debug\Graphics.lib;D:\Work\LaSalle\Unity\IEXengien_Lukas_Kaelin\Framework\Graphics\x64\Debug;$(SolutionDir)Framework\Graphics\x64\Debug;D:\Work\LaSalle\Unity\IEXengien_Lukas_Kaelin\Framework\;D:\Work\LaSalle\Unity\IEXengien_Lukas_Kaelin\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
