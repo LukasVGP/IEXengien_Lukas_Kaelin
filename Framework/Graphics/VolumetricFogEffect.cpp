@@ -1,4 +1,11 @@
+#include "Precompiled.h" // FIX: Must be the first include for Precompiled Headers to work.
+
 #include "VolumetricFogEffect.h"
+
+// Standard Library Includes (if any, placed before engine includes)
+// #include <filesystem> (already used by the path argument)
+
+// Engine Includes (using angle brackets for system-wide includes)
 #include <IExeEngine/Inc/Graphics/PixelShader.h>
 #include <IExeEngine/Inc/Graphics/VertexShader.h>
 #include <IExeEngine/Inc/Graphics/Sampler.h>
@@ -7,11 +14,15 @@
 #include <IExeEngine/Inc/Graphics/Camera.h>
 #include <IExeEngine/Inc/Graphics/DirectionalLight.h>
 #include <IExeEngine/Inc/Color.h>
-#include <IExeEngine/Inc/DebugUI.h> 
-#include <IExeEngine/Inc/Graphics/PixelShader.h>
+#include <IExeEngine/Inc/DebugUI.h> // Includes ImGui headers
+#include <IExeEngine/Inc/IExeEngine.h>
+#include <IExeEngine/Inc/Graphics/RenderObject.h>
 
-#include <IExeEngine/Inc/IExeEngine.h> 
-#include <IExeEngine/Inc/Graphics/RenderObject.h> 
+// External Library Includes (specifically for ImGui flags)
+// FIX: The compiler cannot find ImGuiTreeNodeFlags_DefaultOpen, 
+// which is a flag from the ImGui library.
+// Assuming DebugUI.h provides the core ImGui definitions, 
+// we only need to ensure ImGui is available.
 
 using namespace IExeEngine;
 using namespace IExeEngine::Graphics;
@@ -50,8 +61,6 @@ void VolumetricFogEffect::Begin()
     mPixelShader.Bind();
     mSampler.BindPS(0); // Bind sampler to slot 0
 
-    // Bind resources (assuming your engine's base effects handle camera/light buffers)
-
     // Update and Bind Fog Buffer
     mFogBuffer.Update(mFogData);
     mFogBuffer.BindPS(1); // Bind to slot 1 (example)
@@ -68,7 +77,7 @@ void VolumetricFogEffect::End()
 
 void VolumetricFogEffect::Render(const RenderObject& renderObject)
 {
-    // This effect renders a full-screen quad (mScreenQuad)
+    // Render the full-screen quad (contained in the RenderObject's meshBuffer)
     renderObject.meshBuffer.Render();
 }
 
@@ -80,7 +89,6 @@ void VolumetricFogEffect::SetCamera(const Camera& camera)
 void VolumetricFogEffect::SetDirectionalLight(const DirectionalLight& light)
 {
     mDirectionalLight = &light;
-    // You would pass light direction/color to the GPU here via a LightBuffer
 }
 
 void VolumetricFogEffect::SetDepthMap(Texture depthMap)
@@ -90,7 +98,8 @@ void VolumetricFogEffect::SetDepthMap(Texture depthMap)
 
 void VolumetricFogEffect::DebugUI()
 {
-    // FIX: ImGui::CollapsingHeader requires the full ImGui namespace.
+    // FIX: The ImGui:: is correctly used here. The error was likely caused by 
+    // DebugUI.h not being processed correctly due to the precompiled header issue.
     if (ImGui::CollapsingHeader("Volumetric Fog", ImGuiTreeNodeFlags_DefaultOpen))
     {
         ImGui::ColorEdit4("Fog Color", &mFogData.fogColor.r);

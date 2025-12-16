@@ -1,7 +1,7 @@
 #pragma once
 
 #include <IExeEngine/Inc/IExeEngine.h>
-#include <IExeEngine/Inc/Graphics/VolumetricFogEffect.h>
+#include <IExeEngine/Inc/Graphics/VolumetricFogEffect.h> // Requires a correct Include Path setting
 
 class GameState : public IExeEngine::AppState
 {

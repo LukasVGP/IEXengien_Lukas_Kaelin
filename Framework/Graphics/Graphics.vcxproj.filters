@@ -15,9 +15,6 @@
     <ClInclude Include="Inc\Common.h">
       <Filter>Inc</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Precompiled.h">
-      <Filter>Src</Filter>
-    </ClInclude>
     <ClInclude Include="Inc\GraphicsSystem.h">
       <Filter>Inc</Filter>
     </ClInclude>
@@ -109,6 +106,9 @@
       <Filter>Inc</Filter>
     </ClInclude>
     <ClInclude Include="VolumetricFogEffect.h">
+      <Filter>Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Precompiled.h">
       <Filter>Inc</Filter>
     </ClInclude>
   </ItemGroup>
