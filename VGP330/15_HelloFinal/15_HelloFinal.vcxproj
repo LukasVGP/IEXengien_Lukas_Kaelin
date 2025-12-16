@@ -22,7 +22,7 @@
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{304D8EE6-732F-40D2-8B65-417EAFFCDFD0}</ProjectGuid>
-    <RootNamespace>My14HelloHalftone</RootNamespace>
+    <RootNamespace>15_HelloFinal</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />

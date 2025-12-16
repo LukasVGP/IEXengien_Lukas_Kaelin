@@ -61,3 +61,4 @@
 #include "Terrain.h"
 
 #include "TerrainEffect.h"
+#include "VolumetricFogEffect.h"
